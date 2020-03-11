@@ -67,6 +67,10 @@ class StorageClient
      */
     public function deleteFile($id)
     {
+        if (is_string($id)) {
+            $id = base64_encode($id);
+        }
+
         $response = $this->client::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
@@ -81,6 +85,10 @@ class StorageClient
      */
     public function getFile($id)
     {
+        if (is_string($id)) {
+            $id = base64_encode($id);
+        }
+
         $response = $this->client::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
