@@ -6,7 +6,8 @@ use Zttp\Zttp;
 
 class StorageClient
 {
-    const Root = '/api/client/v1/file';
+    const CLIENT_PATH = '/api/client/v1/file';
+
     /**
      * @var Zttp
      */
@@ -46,7 +47,7 @@ class StorageClient
 
         $response = $this->client::asMultipart()->withHeaders([
             'Authorization' => $this->accessToken,
-        ])->post($this->apiUrl.self::Root, [
+        ])->post($this->apiUrl.self::CLIENT_PATH, [
             [
                 'name' => 'path',
                 'contents' => $path,
@@ -73,7 +74,7 @@ class StorageClient
         $response = $this->client::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
-        ])->delete($this->apiUrl.self::Root.'/'.$normalizeId);
+        ])->delete($this->apiUrl.self::CLIENT_PATH.'/'.$normalizeId);
 
         return $response->body();
     }
@@ -89,7 +90,7 @@ class StorageClient
         $response = $this->client::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
-        ])->get($this->apiUrl.self::Root.'/'.$normalizeId);
+        ])->get($this->apiUrl.self::CLIENT_PATH.'/'.$normalizeId);
 
         return $response->body();
     }
@@ -103,7 +104,7 @@ class StorageClient
         $response = $this->client::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
-        ])->get($this->apiUrl.self::Root, $params);
+        ])->get($this->apiUrl.self::CLIENT_PATH, $params);
 
         return $response->body();
     }
