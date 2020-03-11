@@ -67,14 +67,12 @@ class StorageClient
      */
     public function deleteFile($id)
     {
-        if (is_string($id)) {
-            $id = base64_encode($id);
-        }
+        $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
         $response = $this->client::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
-        ])->delete($this->apiUrl.'/api/client/v1/file/'.$id);
+        ])->delete($this->apiUrl.'/api/client/v1/file/'.$normalizeId);
 
         return $response->body();
     }
@@ -85,14 +83,12 @@ class StorageClient
      */
     public function getFile($id)
     {
-        if (is_string($id)) {
-            $id = base64_encode($id);
-        }
+        $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
         $response = $this->client::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
-        ])->get($this->apiUrl.'/api/client/v1/file/'.$id);
+        ])->get($this->apiUrl.'/api/client/v1/file/'.$normalizeId);
 
         return $response->body();
     }
