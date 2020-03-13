@@ -65,7 +65,7 @@ class StorageClient
 
     /**
      * @param int|string $id
-     * @return mixed
+     * @return bool
      */
     public function deleteFile($id)
     {
@@ -76,12 +76,12 @@ class StorageClient
             'Authorization' => $this->accessToken,
         ])->delete($this->apiUrl.self::CLIENT_PATH.'/'.$normalizeId);
 
-        return $response->body();
+        return $response->isSuccess();
     }
 
     /**
      * @param int|string $id
-     * @return mixed
+     * @return object
      */
     public function getFile($id)
     {
@@ -97,7 +97,7 @@ class StorageClient
 
     /**
      * @param array $params
-     * @return mixed
+     * @return object[]
      */
     public function getListFiles($params)
     {
