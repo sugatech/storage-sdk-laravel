@@ -39,7 +39,7 @@ class StorageClient
     /**
      * @param string $file
      * @param string $path
-     * @return mixed
+     * @return object
      */
     public function createFile($file, $path)
     {
