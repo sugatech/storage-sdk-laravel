@@ -9,11 +9,6 @@ class StorageClient
     const CLIENT_PATH = '/api/client/v1/file';
 
     /**
-     * @var Zttp
-     */
-    private $client;
-
-    /**
      * @var string
      */
     private $accessToken;
@@ -21,19 +16,17 @@ class StorageClient
     /**
      * @var string
      */
-    private $apiUrl;
+    private $root;
 
     /**
      * StorageClient constructor.
-     * @param Zttp $client
      * @param string $apiUrl
      * @param string $accessToken
      */
-    public function __construct($client, $apiUrl, $accessToken)
+    public function __construct($apiUrl, $accessToken)
     {
-        $this->client = $client;
         $this->accessToken = $accessToken;
-        $this->apiUrl = $apiUrl;
+        $this->root = $apiUrl.self::CLIENT_PATH;
     }
 
     /**
@@ -45,9 +38,9 @@ class StorageClient
     {
         $f = fopen($file, 'r');
 
-        $response = $this->client::asMultipart()->withHeaders([
+        $response = Zttp::asMultipart()->withHeaders([
             'Authorization' => $this->accessToken,
-        ])->post($this->apiUrl.self::CLIENT_PATH, [
+        ])->post($this->root, [
             [
                 'name' => 'path',
                 'contents' => $path,
@@ -71,10 +64,10 @@ class StorageClient
     {
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
-        $response = $this->client::withHeaders([
+        $response = Zttp::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
-        ])->delete($this->apiUrl.self::CLIENT_PATH.'/'.$normalizeId);
+        ])->delete($this->root.'/'.$normalizeId);
 
         return $response->isSuccess();
     }
@@ -87,10 +80,10 @@ class StorageClient
     {
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
-        $response = $this->client::withHeaders([
+        $response = Zttp::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
-        ])->get($this->apiUrl.self::CLIENT_PATH.'/'.$normalizeId);
+        ])->get($this->root.'/'.$normalizeId);
 
         return $response->body();
     }
@@ -99,12 +92,12 @@ class StorageClient
      * @param array $params
      * @return object[]
      */
-    public function getListFiles($params)
+    public function getFiles($params)
     {
-        $response = $this->client::withHeaders([
+        $response = Zttp::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => $this->accessToken,
-        ])->get($this->apiUrl.self::CLIENT_PATH, $params);
+        ])->get($this->root, $params);
 
         return $response->body();
     }

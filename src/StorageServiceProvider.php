@@ -3,7 +3,6 @@
 namespace Storage\SDK;
 
 use Illuminate\Support\ServiceProvider;
-use Zttp\Zttp;
 
 class StorageServiceProvider extends ServiceProvider
 {
@@ -20,7 +19,7 @@ class StorageServiceProvider extends ServiceProvider
                 throw new \InvalidArgumentException('Not found access_token config');
             }
 
-            return new StorageClient(app(Zttp::class), $options['api_url'], $options['access_token']);
+            return new StorageClient($options['api_url'], $options['access_token']);
         });
     }
 
