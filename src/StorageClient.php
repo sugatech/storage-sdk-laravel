@@ -2,16 +2,15 @@
 
 namespace Storage\SDK;
 
+use Zttp\PendingZttpRequest;
 use Zttp\Zttp;
 
 class StorageClient
 {
-    const CLIENT_PATH = '/api/client/v1/file';
-
     /**
-     * @var Zttp
+     * @var string
      */
-    private $client;
+    private $apiUrl;
 
     /**
      * @var string
@@ -19,21 +18,33 @@ class StorageClient
     private $accessToken;
 
     /**
-     * @var string
-     */
-    private $apiUrl;
-
-    /**
-     * StorageClient constructor.
-     * @param Zttp $client
      * @param string $apiUrl
      * @param string $accessToken
      */
-    public function __construct($client, $apiUrl, $accessToken)
+    public function __construct($apiUrl, $accessToken)
     {
-        $this->client = $client;
-        $this->accessToken = $accessToken;
         $this->apiUrl = $apiUrl;
+        $this->accessToken = $accessToken;
+    }
+
+    /**
+     * @return PendingZttpRequest
+     */
+    private function request()
+    {
+        return Zttp::withHeaders([
+                'Authorization' => 'Bearer ' . $this->accessToken,
+            ])
+            ->withoutVerifying();
+    }
+
+    /**
+     * @param string $route
+     * @return string
+     */
+    private function getUrl($route)
+    {
+        return $this->apiUrl . '/api/client/v1' . $route;
     }
 
     /**
@@ -45,18 +56,21 @@ class StorageClient
     {
         $f = fopen($file, 'r');
 
-        $response = $this->client::asMultipart()->withHeaders([
-            'Authorization' => $this->accessToken,
-        ])->post($this->apiUrl.self::CLIENT_PATH, [
-            [
-                'name' => 'path',
-                'contents' => $path,
-            ],
-            [
-                'name' => 'file',
-                'contents' => $f,
-            ]
-        ]);
+        $response = $this->request()
+            ->asMultipart()
+            ->post(
+                $this->getUrl('/files'),
+                [
+                    [
+                        'name' => 'path',
+                        'contents' => $path,
+                    ],
+                    [
+                        'name' => 'file',
+                        'contents' => $f,
+                    ]
+                ]
+            );
 
         fclose($f);
 
@@ -71,41 +85,35 @@ class StorageClient
     {
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
-        $response = $this->client::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => $this->accessToken,
-        ])->delete($this->apiUrl.self::CLIENT_PATH.'/'.$normalizeId);
-
-        return $response->isSuccess();
+        return $this->request()
+            ->asJson()
+            ->delete($this->getUrl('/files/' . $normalizeId))
+            ->isSuccess();
     }
 
     /**
      * @param int|string $id
-     * @return object
+     * @return array
      */
     public function getFile($id)
     {
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
-        $response = $this->client::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => $this->accessToken,
-        ])->get($this->apiUrl.self::CLIENT_PATH.'/'.$normalizeId);
-
-        return $response->body();
+        return $this->request()
+            ->asJson()
+            ->get($this->getUrl('/files/' . $normalizeId))
+            ->body();
     }
 
     /**
      * @param array $params
      * @return object[]
      */
-    public function getListFiles($params)
+    public function getFiles($params = [])
     {
-        $response = $this->client::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => $this->accessToken,
-        ])->get($this->apiUrl.self::CLIENT_PATH, $params);
-
-        return $response->body();
+        return $this->request()
+            ->asJson()
+            ->get($this->getUrl('/files'))
+            ->body();
     }
 }
