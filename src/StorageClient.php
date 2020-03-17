@@ -32,14 +32,19 @@ class StorageClient
      */
     private function request()
     {
-        return Zttp::withOptions([
-            'base_uri' => $this->apiUrl . '/api/client/v1',
-            'headers' => [
+        return Zttp::withHeaders([
                 'Authorization' => 'Bearer ' . $this->accessToken,
-                'Content-Type' => 'application/json',
-            ],
-            'verify' => false,
-        ]);
+            ])
+            ->withoutVerifying();
+    }
+
+    /**
+     * @param string $route
+     * @return string
+     */
+    private function getUrl($route)
+    {
+        return $this->apiUrl . '/api/client/v1' . $route;
     }
 
     /**
@@ -54,7 +59,7 @@ class StorageClient
         $response = $this->request()
             ->asMultipart()
             ->post(
-                '/files',
+                $this->getUrl('/files'),
                 [
                     [
                         'name' => 'path',
@@ -81,7 +86,8 @@ class StorageClient
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
         return $this->request()
-            ->delete('/files/' . $normalizeId)
+            ->asJson()
+            ->delete($this->getUrl('/files/' . $normalizeId))
             ->isSuccess();
     }
 
@@ -94,7 +100,8 @@ class StorageClient
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
         return $this->request()
-            ->get('/files/' . $normalizeId)
+            ->asJson()
+            ->get($this->getUrl('/files/' . $normalizeId))
             ->body();
     }
 
@@ -102,10 +109,11 @@ class StorageClient
      * @param array $params
      * @return object[]
      */
-    public function getFiles($params)
+    public function getFiles($params = [])
     {
         return $this->request()
-            ->get('/files')
+            ->asJson()
+            ->get($this->getUrl('/files'))
             ->body();
     }
 }
