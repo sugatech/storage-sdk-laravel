@@ -113,7 +113,7 @@ class StorageClient
     {
         return $this->request()
             ->asJson()
-            ->get($this->getUrl('/files'))
+            ->get($this->getUrl('/files'), $params)
             ->body();
     }
 }
