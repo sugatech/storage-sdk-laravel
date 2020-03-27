@@ -50,7 +50,7 @@ class StorageClient
     /**
      * @param string $file
      * @param string $path
-     * @return object
+     * @return array
      */
     public function createFile($file, $path)
     {
@@ -105,7 +105,7 @@ class StorageClient
 
     /**
      * @param array $params
-     * @return object[]
+     * @return array[]
      */
     public function getFiles($params = [])
     {
