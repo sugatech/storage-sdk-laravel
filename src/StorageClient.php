@@ -74,7 +74,7 @@ class StorageClient
 
         fclose($f);
 
-        return \GuzzleHttp\json_decode($response->body());
+        return $response->json();
     }
 
     /**
@@ -86,24 +86,21 @@ class StorageClient
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
         return $this->request()
-            ->asJson()
             ->delete($this->getUrl('/files/' . $normalizeId))
             ->isSuccess();
     }
 
     /**
      * @param int|string $id
-     * @return object
+     * @return array
      */
     public function getFile($id)
     {
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
-        $response = $this->request()
-            ->asJson()
-            ->get($this->getUrl('/files/' . $normalizeId));
-
-        return \GuzzleHttp\json_decode($response->body());
+        return $this->request()
+            ->get($this->getUrl('/files/' . $normalizeId))
+            ->json();
     }
 
     /**
@@ -112,10 +109,8 @@ class StorageClient
      */
     public function getFiles($params = [])
     {
-        $response = $this->request()
-            ->asJson()
-            ->get($this->getUrl('/files'), $params);
-
-        return \GuzzleHttp\json_decode($response->body());
+        return $this->request()
+            ->get($this->getUrl('/files'), $params)
+            ->json();
     }
 }
