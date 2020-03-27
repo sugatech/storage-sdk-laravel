@@ -50,7 +50,7 @@ class StorageClient
     /**
      * @param string $file
      * @param string $path
-     * @return object
+     * @return array
      */
     public function createFile($file, $path)
     {
@@ -74,7 +74,7 @@ class StorageClient
 
         fclose($f);
 
-        return $response->body();
+        return $response->json();
     }
 
     /**
@@ -86,7 +86,6 @@ class StorageClient
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
         return $this->request()
-            ->asJson()
             ->delete($this->getUrl('/files/' . $normalizeId))
             ->isSuccess();
     }
@@ -100,20 +99,18 @@ class StorageClient
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
         return $this->request()
-            ->asJson()
             ->get($this->getUrl('/files/' . $normalizeId))
-            ->body();
+            ->json();
     }
 
     /**
      * @param array $params
-     * @return object[]
+     * @return array[]
      */
     public function getFiles($params = [])
     {
         return $this->request()
-            ->asJson()
             ->get($this->getUrl('/files'), $params)
-            ->body();
+            ->json();
     }
 }
