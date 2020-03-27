@@ -116,6 +116,6 @@ class StorageClient
             ->asJson()
             ->get($this->getUrl('/files'), $params);
 
-        return \GuzzleHttp\json_encode($response->body());
+        return \GuzzleHttp\json_decode($response->body());
     }
 }
