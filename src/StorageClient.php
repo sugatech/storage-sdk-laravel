@@ -2,40 +2,54 @@
 
 namespace Storage\SDK;
 
+use PassportClientCredentials\OAuthClient;
 use Zttp\PendingZttpRequest;
 use Zttp\Zttp;
+use Zttp\ZttpResponse;
 
 class StorageClient
 {
+    /**
+     * @var OAuthClient
+     */
+    private $oauthClient;
+
     /**
      * @var string
      */
     private $apiUrl;
 
     /**
-     * @var string
-     */
-    private $accessToken;
-
-    /**
      * @param string $apiUrl
-     * @param string $accessToken
      */
-    public function __construct($apiUrl, $accessToken)
+    public function __construct($apiUrl)
     {
+        $this->oauthClient = new OAuthClient(
+            config('storage.oauth.url'),
+            config('storage.oauth.client_id'),
+            config('storage.oauth.client_secret')
+        );
         $this->apiUrl = $apiUrl;
-        $this->accessToken = $accessToken;
     }
 
     /**
-     * @return PendingZttpRequest
+     * @param callable $handler
+     * @return ZttpResponse
      */
-    private function request()
+    private function request($handler)
     {
-        return Zttp::withHeaders([
-                'Authorization' => 'Bearer ' . $this->accessToken,
-            ])
+        $request = Zttp::withHeaders([
+            'Authorization' => 'Bearer ' . $this->oauthClient->getAccessToken(),
+        ])
             ->withoutVerifying();
+
+        $response = $handler($request);
+
+        if ($response->status() == 401) {
+            $this->oauthClient->getAccessToken(true);
+        }
+
+        return $response;
     }
 
     /**
@@ -56,21 +70,21 @@ class StorageClient
     {
         $f = fopen($file, 'r');
 
-        $response = $this->request()
-            ->asMultipart()
-            ->post(
-                $this->getUrl('/files'),
-                [
-                    [
-                        'name' => 'path',
-                        'contents' => $path,
-                    ],
-                    [
-                        'name' => 'file',
-                        'contents' => $f,
-                    ]
-                ]
-            );
+        $params = [
+            [
+                'name' => 'path',
+                'contents' => $path,
+            ],
+            [
+                'name' => 'file',
+                'contents' => $f,
+            ]
+        ];
+
+        $response = $this->request(function (PendingZttpRequest $request) use ($params) {
+            return $request->asMultipart()
+                ->post($this->getUrl('/files'), $params);
+        });
 
         fclose($f);
 
@@ -85,8 +99,9 @@ class StorageClient
     {
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
-        return $this->request()
-            ->delete($this->getUrl('/files/' . $normalizeId))
+        return $this->request(function (PendingZttpRequest $request) use ($normalizeId) {
+            return $request->delete($this->getUrl('/files/' . $normalizeId));
+        })
             ->isSuccess();
     }
 
@@ -98,8 +113,9 @@ class StorageClient
     {
         $normalizeId = is_numeric($id) ? $id : base64_encode($id);
 
-        return $this->request()
-            ->get($this->getUrl('/files/' . $normalizeId))
+        return $this->request(function (PendingZttpRequest $request) use ($normalizeId) {
+            return $request->get($this->getUrl('/files/' . $normalizeId));
+        })
             ->json();
     }
 
@@ -109,8 +125,9 @@ class StorageClient
      */
     public function getFiles($params = [])
     {
-        return $this->request()
-            ->get($this->getUrl('/files'), $params)
+        return $this->request(function (PendingZttpRequest $request) use ($params) {
+            return $request->get($this->getUrl('/files'), $params);
+        })
             ->json();
     }
 }
