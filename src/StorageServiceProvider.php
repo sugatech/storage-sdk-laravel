@@ -17,8 +17,12 @@ class StorageServiceProvider extends ServiceProvider
                 throw new \InvalidArgumentException('Not found api_urL config');
             }
 
-            if (!isset($options['access_token'])) {
-                throw new \InvalidArgumentException('Not found access_token config');
+            if (!isset($options['oauth']['client_id'])) {
+                throw new \InvalidArgumentException('Not found oauth client_id config');
+            }
+
+            if (!isset($options['oauth']['client_secret'])) {
+                throw new \InvalidArgumentException('Not found oauth client_secret config');
             }
 
             return new StorageClient($options['api_url']);
