@@ -2,7 +2,9 @@
 
 namespace Storage\SDK;
 
+use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Lumen\Application as LumenApplication;
 
 class StorageServiceProvider extends ServiceProvider
 {
@@ -19,7 +21,7 @@ class StorageServiceProvider extends ServiceProvider
                 throw new \InvalidArgumentException('Not found access_token config');
             }
 
-            return new StorageClient($options['api_url'], $options['access_token']);
+            return new StorageClient($options['api_url']);
         });
     }
 
