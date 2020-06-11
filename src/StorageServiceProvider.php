@@ -10,6 +10,8 @@ class StorageServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->mergeConfigFrom($this->configPath(), 'storage');
+        
         $this->app->singleton('storage.client', function ($app) {
             $options = $app['config']->get('storage');
 
