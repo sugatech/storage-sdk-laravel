@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f56b085ae6e4cd4c8712b9c292165ced",
+    "content-hash": "7d65ff36d4d7dab7142fbfc6fe06f5e8",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -719,16 +719,16 @@
         },
         {
             "name": "sugatech/oauth2-client-credentials-laravel",
-            "version": "20.0.1",
+            "version": "20.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sugatech/oauth2-client-credentials-laravel.git",
-                "reference": "1abbd3ff1933b2f9fd0664fef070a97268c34357"
+                "reference": "d349284e704841736fe9e8f00d08981cf4e7147e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sugatech/oauth2-client-credentials-laravel/zipball/1abbd3ff1933b2f9fd0664fef070a97268c34357",
-                "reference": "1abbd3ff1933b2f9fd0664fef070a97268c34357",
+                "url": "https://api.github.com/repos/sugatech/oauth2-client-credentials-laravel/zipball/d349284e704841736fe9e8f00d08981cf4e7147e",
+                "reference": "d349284e704841736fe9e8f00d08981cf4e7147e",
                 "shasum": ""
             },
             "require": {
@@ -743,7 +743,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "PassportClientCredentials\\": "src/"
+                    "OAuth2ClientCredentials\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -751,7 +751,7 @@
                 "MIT"
             ],
             "description": "Oauth2 client credentials for laravel and lumen",
-            "time": "2020-05-02T04:32:17+00:00"
+            "time": "2020-05-26T04:19:56+00:00"
         },
         {
             "name": "symfony/polyfill-intl-idn",
