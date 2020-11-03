@@ -35,6 +35,7 @@ class StorageClient
     /**
      * @param callable $handler
      * @return Response
+     * @throws \Illuminate\Http\Client\RequestException
      */
     private function request($handler)
     {
@@ -65,6 +66,7 @@ class StorageClient
      * @param string $file
      * @param string $path
      * @return array
+     * @throws \Illuminate\Http\Client\RequestException
      */
     public function createFile($file, $path)
     {
@@ -94,6 +96,7 @@ class StorageClient
     /**
      * @param int|string $id
      * @return bool
+     * @throws \Illuminate\Http\Client\RequestException
      */
     public function deleteFile($id)
     {
@@ -108,6 +111,7 @@ class StorageClient
     /**
      * @param int|string $id
      * @return array
+     * @throws \Illuminate\Http\Client\RequestException
      */
     public function getFile($id)
     {
@@ -122,6 +126,7 @@ class StorageClient
     /**
      * @param array $params
      * @return array[]
+     * @throws \Illuminate\Http\Client\RequestException
      */
     public function getFiles($params = [])
     {
