@@ -94,31 +94,31 @@ class StorageClient
     }
 
     /**
-     * @param int|string $id
+     * @param int|string $idOrPath
      * @return bool
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function deleteFile($id)
+    public function deleteFile($idOrPath)
     {
-        $normalizeId = is_numeric($id) ? $id : base64_encode($id);
+        $idOrBase64Path = is_numeric($idOrPath) ? $idOrPath : base64_encode($idOrPath);
 
-        return $this->request(function (PendingRequest $request) use ($normalizeId) {
-            return $request->delete($this->getUrl('/files/' . $normalizeId));
+        return $this->request(function (PendingRequest $request) use ($idOrBase64Path) {
+            return $request->delete($this->getUrl('/files/' . $idOrBase64Path));
         })
             ->successful();
     }
 
     /**
-     * @param int|string $id
+     * @param int|string $idOrPath
      * @return array
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function getFile($id)
+    public function getFile($idOrPath)
     {
-        $normalizeId = is_numeric($id) ? $id : base64_encode($id);
+        $idOrBase64Path = is_numeric($idOrPath) ? $idOrPath : base64_encode($idOrPath);
 
-        return $this->request(function (PendingRequest $request) use ($normalizeId) {
-            return $request->get($this->getUrl('/files/' . $normalizeId));
+        return $this->request(function (PendingRequest $request) use ($idOrBase64Path) {
+            return $request->get($this->getUrl('/files/' . $idOrBase64Path));
         })
             ->json();
     }
@@ -132,6 +132,30 @@ class StorageClient
     {
         return $this->request(function (PendingRequest $request) use ($params) {
             return $request->get($this->getUrl('/files'), $params);
+        })
+            ->json();
+    }
+
+    /**
+     * @param int|string $idOrPath
+     * @param int $expiresIn
+     * @param array $options
+     * @param boolean $fallbackToUrl
+     * @return string
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    public function getTemporaryUrl($idOrPath, $expiresIn, $options = [], $fallbackToUrl = false)
+    {
+        $idOrBase64Path = is_numeric($idOrPath) ? $idOrPath : base64_encode($idOrPath);
+
+        $params = [
+            'expires_in' => $expiresIn,
+            'options' => $options,
+            'fallback_to_url' => $fallbackToUrl,
+        ];
+
+        return $this->request(function (PendingRequest $request) use ($idOrBase64Path, $params) {
+            return $request->get($this->getUrl('/files/' . $idOrBase64Path . '/temporary-url'), $params);
         })
             ->json();
     }
