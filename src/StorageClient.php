@@ -159,4 +159,16 @@ class StorageClient
         })
             ->json();
     }
+
+    /**
+     * @param array $ids
+     * @return mixed
+     */
+    public function deleteMultiple($ids = [])
+    {
+        return $this->request(function (PendingRequest $request) use ($ids) {
+            return $request->delete($this->getUrl('/files/multiple'), ['ids' => $ids]);
+        })
+            ->json();
+    }
 }
