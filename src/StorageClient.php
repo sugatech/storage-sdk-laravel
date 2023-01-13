@@ -63,14 +63,15 @@ class StorageClient
     }
 
     /**
-     * @param string $file
+     * @param string $filePath
      * @param string $path
+     * @param string $fileName
      * @return array
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function createFile($file, $path)
+    public function createFile($filePath, $path, $fileName = null)
     {
-        $f = fopen($file, 'r');
+        $f = fopen($filePath, 'r');
 
         $params = [
             [
@@ -80,6 +81,7 @@ class StorageClient
             [
                 'name' => 'file',
                 'contents' => $f,
+                'filename' => $fileName,
             ]
         ];
 
