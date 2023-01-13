@@ -63,8 +63,9 @@ class StorageClient
     }
 
     /**
-     * @param string $file
+     * @param string $filePath
      * @param string $path
+     * @param string $fileName
      * @return array
      * @throws \Illuminate\Http\Client\RequestException
      */
