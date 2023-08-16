@@ -163,13 +163,13 @@ class StorageClient
     }
 
     /**
-     * @param array $ids
-     * @return mixed
+     * @param array $idsOrPaths
+     * @return bool
      */
-    public function deleteMultiple($ids = [])
+    public function deleteMultiple($idsOrPaths = [])
     {
-        return $this->request(function (PendingRequest $request) use ($ids) {
-            return $request->delete($this->getUrl('/files'), ['ids' => $ids]);
+        return $this->request(function (PendingRequest $request) use ($idsOrPaths) {
+            return $request->delete($this->getUrl('/files'), ['ids_or_paths' => $idsOrPaths]);
         })
             ->json();
     }
